@@ -1,5 +1,5 @@
-require 'rugged'
-require 'linguist'
+require 'rugged' 
+require 'linguist'  
 require 'git'
 require 'logger'
 
