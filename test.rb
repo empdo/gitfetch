@@ -1,22 +1,36 @@
 require 'rugged' 
 require 'linguist'  
 require 'git'
-require 'logger'
 
 #repo = Rugged::Repository.new('.')
 #project = Linguist::Repository.new(repo, repo.head.target_id)
 #print(project.language + "\n")
 
-working_dir = "/home/emil/dev/gitfetch/"
-g = Git.open(working_dir, :log => Logger.new(STDOUT))
+g = Git.open(Dir.pwd)
 
-lines = File.read("js.txt").split
-stuff =  [g.config('remote.origin.url').delete_prefix("git@github.com:") , "-----------", "Contributors:" + g.config("user.name"), g.log]
+lines = []
+File.foreach("js.txt").with_index do |line|
+  lines.append(line)
+end
 
+stuff = [g.config('remote.origin.url').delete_prefix("git@github.com:"), 
+          "-----------", 
+          "Contributors: " + g.config("user.name"), 
+          "Commits: " + (g.log.each{|x| x.to_s}).length.to_s,
+          "Branch: " + g.branch.to_s
+]
 
+i = 0
 stuff.each { |item|
-  puts(item)
+  lines[i] = lines[i].chomp + item.chomp
+  i += 1
 }
+
+lines.each { |line|
+  line.chomp!
+}
+
+puts(lines)
 
 #https://github.com/ruby-git/ruby-git
 #
